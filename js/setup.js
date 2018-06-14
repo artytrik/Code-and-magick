@@ -1,22 +1,26 @@
 'use strict';
 
-var FIRST_NAMES = ['Иван',
+var FIRST_NAMES = [
+  'Иван',
   'Хуан Себастьян',
   'Мария',
   'Кристоф',
   'Виктор',
   'Юлия',
   'Люпита',
-  'Вашингтон'];
+  'Вашингтон'
+];
 
-var SECOND_NAMES = ['да Марья',
+var SECOND_NAMES = [
+  'да Марья',
   'Верон',
   'Мирабелла',
   'Вальц',
   'Онопко',
   'Топольницкая',
   'Нионго',
-  'Ирвинг'];
+  'Ирвинг'
+];
 
 var COAT_COLORS = [
   'rgb(101, 137, 164)',
@@ -38,19 +42,19 @@ var EYE_COLORS = [
 var userDialog = document.querySelector('.setup');
 userDialog.classList.remove('hidden');
 
-var similarListElement = document.querySelector('.setup-similar-list');
+var similarListElement = userDialog.querySelector('.setup-similar-list');
 
 var similarWizardTemplate = document.querySelector('#similar-wizard-template')
   .content
   .querySelector('.setup-similar-item');
 
 var getRandomItem = function (array) {
-  var randomItem = array[Math.floor(Math.random() * array.length)];
-  return randomItem;
+  return array[Math.floor(Math.random() * array.length)];
 };
 
 var createWizards = function (length) {
-  for (var i = 0, wizards = []; i < length; i++) {
+  var wizards = [];
+  for (var i = 0; i < length; i++) {
     wizards.push({
       name: getRandomItem(FIRST_NAMES) + ' ' + getRandomItem(SECOND_NAMES),
       coatColor: getRandomItem(COAT_COLORS),
