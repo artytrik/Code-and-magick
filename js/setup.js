@@ -39,14 +39,37 @@ var EYE_COLORS = [
   'green'
 ];
 
+var FIREBALL_COLORS = [
+  '#ee4830',
+  '#30a8ee',
+  '#5ce6c0',
+  '#e848d5',
+  '#e6e848'
+];
+
+var ESC_KEYCODE = 27;
+var ENTER_KEYCODE = 13;
+
 var userDialog = document.querySelector('.setup');
-userDialog.classList.remove('hidden');
 
 var similarListElement = userDialog.querySelector('.setup-similar-list');
+
+var setupWizard = userDialog.querySelector('.setup-player');
+var wizardCoat = setupWizard.querySelector('.wizard-coat');
+var wizardEyes = setupWizard.querySelector('.wizard-eyes');
+var wizardFireball = setupWizard.querySelector('.setup-fireball-wrap');
+var eyesColorInput = setupWizard.querySelector('#eyes-color-input');
+var coatColorInput = setupWizard.querySelector('#coat-color-input');
+var fireballColorInput = setupWizard.querySelector('#fireball-color-input');
 
 var similarWizardTemplate = document.querySelector('#similar-wizard-template')
   .content
   .querySelector('.setup-similar-item');
+
+var setupOpen = document.querySelector('.setup-open');
+var setupClose = userDialog.querySelector('.setup-close');
+
+var setupUserName = userDialog.querySelector('.setup-user-name');
 
 var getRandomItem = function (array) {
   return array[Math.floor(Math.random() * array.length)];
@@ -85,5 +108,69 @@ var createElement = function () {
 };
 
 createElement();
+
+var onPopupEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    userDialog.classList.add('hidden');
+  }
+};
+
+var onInputFocus = function () {
+  document.removeEventListener('keydown', onPopupEscPress);
+};
+
+var onInputBlur = function () {
+  document.addEventListener('keydown', onPopupEscPress);
+};
+
+var openPopup = function () {
+  userDialog.classList.remove('hidden');
+  document.addEventListener('keydown', onPopupEscPress);
+  setupUserName.addEventListener('focus', onInputFocus);
+  setupUserName.addEventListener('blur', onInputBlur);
+};
+
+var closePopup = function () {
+  userDialog.classList.add('hidden');
+  document.removeEventListener('keydown', onPopupEscPress);
+};
+
+setupOpen.addEventListener('click', function () {
+  openPopup();
+});
+
+setupOpen.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    openPopup();
+  }
+});
+
+setupClose.addEventListener('click', function () {
+  closePopup();
+});
+
+setupClose.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    closePopup();
+  }
+});
+
+wizardCoat.addEventListener('click', function () {
+  var randomCoatColor = getRandomItem(COAT_COLORS);
+  wizardCoat.style.fill = randomCoatColor;
+  coatColorInput.value = randomCoatColor;
+});
+
+wizardEyes.addEventListener('click', function () {
+  var randomEyesColor = getRandomItem(EYE_COLORS);
+  wizardEyes.style.fill = randomEyesColor;
+  eyesColorInput.value = randomEyesColor;
+});
+
+wizardFireball.addEventListener('click', function () {
+  var randomFireballColor = getRandomItem(FIREBALL_COLORS);
+  wizardFireball.style.background = randomFireballColor;
+  fireballColorInput.value = randomFireballColor;
+});
 
 userDialog.querySelector('.setup-similar').classList.remove('hidden');
