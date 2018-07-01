@@ -47,9 +47,6 @@ var FIREBALL_COLORS = [
   '#e6e848'
 ];
 
-var ESC_KEYCODE = 27;
-var ENTER_KEYCODE = 13;
-
 var userDialog = document.querySelector('.setup');
 
 var similarListElement = userDialog.querySelector('.setup-similar-list');
@@ -65,11 +62,6 @@ var fireballColorInput = setupWizard.querySelector('#fireball-color-input');
 var similarWizardTemplate = document.querySelector('#similar-wizard-template')
   .content
   .querySelector('.setup-similar-item');
-
-var setupOpen = document.querySelector('.setup-open');
-var setupClose = userDialog.querySelector('.setup-close');
-
-var setupUserName = userDialog.querySelector('.setup-user-name');
 
 var getRandomItem = function (array) {
   return array[Math.floor(Math.random() * array.length)];
@@ -108,52 +100,6 @@ var createElement = function () {
 };
 
 createElement();
-
-var onPopupEscPress = function (evt) {
-  if (evt.keyCode === ESC_KEYCODE) {
-    userDialog.classList.add('hidden');
-  }
-};
-
-var onInputFocus = function () {
-  document.removeEventListener('keydown', onPopupEscPress);
-};
-
-var onInputBlur = function () {
-  document.addEventListener('keydown', onPopupEscPress);
-};
-
-var openPopup = function () {
-  userDialog.classList.remove('hidden');
-  document.addEventListener('keydown', onPopupEscPress);
-  setupUserName.addEventListener('focus', onInputFocus);
-  setupUserName.addEventListener('blur', onInputBlur);
-};
-
-var closePopup = function () {
-  userDialog.classList.add('hidden');
-  document.removeEventListener('keydown', onPopupEscPress);
-};
-
-setupOpen.addEventListener('click', function () {
-  openPopup();
-});
-
-setupOpen.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === ENTER_KEYCODE) {
-    openPopup();
-  }
-});
-
-setupClose.addEventListener('click', function () {
-  closePopup();
-});
-
-setupClose.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === ENTER_KEYCODE) {
-    closePopup();
-  }
-});
 
 wizardCoat.addEventListener('click', function () {
   var randomCoatColor = getRandomItem(COAT_COLORS);
