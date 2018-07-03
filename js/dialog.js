@@ -7,15 +7,11 @@
   var setupClose = userDialog.querySelector('.setup-close');
   var setupUserName = userDialog.querySelector('.setup-user-name');
 
-  var ESC_KEYCODE = 27;
-  var ENTER_KEYCODE = 13;
   var DEFAULT_DIALOG_TOP = 80;
   var DEFAULT_DIALOG_LEFT = 50;
 
   var onPopupEscPress = function (evt) {
-    if (evt.keyCode === ESC_KEYCODE) {
-      userDialog.classList.add('hidden');
-    }
+    window.util.isEscEvent(evt, closePopup);
   };
 
   var onInputFocus = function () {
@@ -45,9 +41,7 @@
   });
 
   setupOpen.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === ENTER_KEYCODE) {
-      openPopup();
-    }
+    window.util.isEnterEvent(evt, openPopup);
   });
 
   setupClose.addEventListener('click', function () {
@@ -55,9 +49,7 @@
   });
 
   setupClose.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === ENTER_KEYCODE) {
-      closePopup();
-    }
+    window.util.isEnterEvent(evt, closePopup);
   });
 
   dialogHandle.addEventListener('mousedown', function (evt) {
