@@ -1,102 +1,57 @@
 'use strict';
 
 (function () {
-  var COAT_COLORS = [
-    'rgb(101, 137, 164)',
-    'rgb(241, 43, 107)',
-    'rgb(146, 100, 161)',
-    'rgb(56, 159, 117)',
-    'rgb(215, 210, 55)',
-    'rgb(0, 0, 0)'
-  ];
-
-  var EYE_COLORS = [
-    'black',
-    'red',
-    'blue',
-    'yellow',
-    'green'
-  ];
-
-  var FIREBALL_COLORS = [
-    '#ee4830',
-    '#30a8ee',
-    '#5ce6c0',
-    '#e848d5',
-    '#e6e848'
-  ];
-
-  var WIZARD_NUMBER = 4;
-
   var userDialog = document.querySelector('.setup');
 
-  var similarListElement = userDialog.querySelector('.setup-similar-list');
+  var coatColor;
+  var eyesColor;
+  var wizards = [];
 
-  var setupWizard = userDialog.querySelector('.setup-player');
-  var wizardCoat = setupWizard.querySelector('.wizard-coat');
-  var wizardEyes = setupWizard.querySelector('.wizard-eyes');
-  var wizardFireball = setupWizard.querySelector('.setup-fireball-wrap');
-  var eyesColorInput = setupWizard.querySelector('#eyes-color-input');
-  var coatColorInput = setupWizard.querySelector('#coat-color-input');
-  var fireballColorInput = setupWizard.querySelector('#fireball-color-input');
+  var getRank = function (wizard) {
+    var rank = 0;
 
-  var similarWizardTemplate = document.querySelector('#similar-wizard-template')
-    .content
-    .querySelector('.setup-similar-item');
-
-  var getRandomItem = function (array) {
-    return array[Math.floor(Math.random() * array.length)];
-  };
-
-  var renderWizard = function (wizard) {
-    var wizardElement = similarWizardTemplate.cloneNode(true);
-
-    wizardElement.querySelector('.setup-similar-label').textContent = wizard.name;
-    wizardElement.querySelector('.wizard-coat').style.fill = wizard.colorCoat;
-    wizardElement.querySelector('.wizard-eyes').style.fill = wizard.colorEyes;
-
-    return wizardElement;
-  };
-
-  var successHandler = function (wizards) {
-    var fragment = document.createDocumentFragment();
-    for (var i = 0; i < WIZARD_NUMBER; i++) {
-      fragment.appendChild(renderWizard(wizards[i]));
+    if (wizard.colorCoat === coatColor) {
+      rank += 2;
     }
-    similarListElement.appendChild(fragment);
+    if (wizard.colorEyes === eyesColor) {
+      rank += 1;
+    }
 
-    userDialog.querySelector('.setup-similar').classList.remove('hidden');
+    return rank;
+  };
+
+  var updateWizards = function () {
+    window.render(wizards.slice().sort(function (left, right) {
+      var rankDiff = getRank(right) - getRank(left);
+      if (rankDiff === 0) {
+        rankDiff = wizards.indexOf(left) - wizards.indexOf(right);
+      }
+      return rankDiff;
+    }));
+  };
+
+  window.wizard.onEyesChange = window.debounce(function (color) {
+    eyesColor = color;
+    updateWizards();
+  });
+
+  window.wizard.onCoatChange = window.debounce(function (color) {
+    coatColor = color;
+    updateWizards();
+  });
+
+  var successHandler = function (data) {
+    wizards = data;
+    updateWizards();
   };
 
   var errorHandler = function (errorMessage) {
-    var node = document.createElement('div');
-    node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
-    node.style.position = 'absolute';
-    node.style.left = 0;
-    node.style.right = 0;
-    node.style.fontSize = '30px';
+    var node = document.querySelector('.error');
+    node.classList.remove('hidden');
 
     node.textContent = errorMessage;
     document.body.insertAdjacentElement('afterbegin', node);
   };
-
-  wizardCoat.addEventListener('click', function () {
-    var randomCoatColor = getRandomItem(COAT_COLORS);
-    wizardCoat.style.fill = randomCoatColor;
-    coatColorInput.value = randomCoatColor;
-  });
-
-  wizardEyes.addEventListener('click', function () {
-    var randomEyesColor = getRandomItem(EYE_COLORS);
-    wizardEyes.style.fill = randomEyesColor;
-    eyesColorInput.value = randomEyesColor;
-  });
-
-  wizardFireball.addEventListener('click', function () {
-    var randomFireballColor = getRandomItem(FIREBALL_COLORS);
-    wizardFireball.style.background = randomFireballColor;
-    fireballColorInput.value = randomFireballColor;
-  });
 
   var onSumbitSuccess = function () {
     userDialog.classList.add('hidden');
